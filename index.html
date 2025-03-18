@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet UCC Andres moncayo 1B</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #000000;
+            background-image: url('https://images.unsplash.com/photo-1501167786227-4cba60f6d58f');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgb(255, 253, 253);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 15px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .transaction-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .transaction-form input, .transaction-form select, .transaction-form button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .transaction-form button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .transaction-form button:hover {
+            background-color: #2980b9;
+        }
+        .transactions {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .transaction {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .income {
+            color: #27ae60;
+        }
+        .expense {
+            color: #e74c3c;
+        }
+        .accounts-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .account {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 0 5px;
+            text-align: center;
+        }
+        .account-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .account-balance {
+            color: #27ae60;
+            font-size: 18px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRBq1_AAfrUX-OlSEPcvHXPFam-ioNlsoYEA&s" alt="Logo Universidad Cooperativa de Colombia" class="logo">
+            <h1>Wallet UCC Andres moncayo 1B</h1>
+        </header>
+        
+        <div class="card">
+            <h2>Cuentas</h2>
+            <div class="accounts-container" id="accounts">EDC
+                <!-- Las cuentas se agregarán dinámicamente aquí -->
+            </div>
+            <div class="balance">Balance Total: <span id="balance">$0.00</span></div>
+        </div>
+        
+        <div class="card">
+            <h2>Nueva Transacción</h2>
+            <form class="transaction-form" id="transactionForm">
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <input type="text" id="description" placeholder="Descripción" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Monto</label>
+                    <input type="number" id="amount" placeholder="Monto" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type">Tipo de Transacción</label>
+                    <select id="type">
+                        <option value="income">Ingreso</option>
+                        <option value="expense">Gasto</option>
+                        <option value="transfer">Transferencia</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sourceAccount">Cuenta de Origen</label>
+                    <select id="sourceAccount">
+                        <!-- Las opciones de cuenta se agregarán dinámicamente -->
+                    </select>
+                </div>
+                
+                <div class="form-group destination-account hidden" id="destinationAccountGroup">
+                    <label for="destinationAccount">Cuenta de Destino</label>
+                    <select id="destinationAccount">
+                        <!-- Las opciones de cuenta se agregarán dinámicamente -->
+                    </select>
+                </div>
+                
+                <button type="submit">Agregar Transacción</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>Historial de Transacciones</h2>
+            <div class="transactions" id="transactions">
+                <!-- Las transacciones se agregarán dinámicamente aquí -->
+                <div class="transaction">
+                    <span>No hay transacciones aún</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Agregar Nueva Cuenta</h2>
+            <form class="transaction-form" id="accountForm">
+                <div class="form-group">
+                    <label for="accountName">Nombre de la Cuenta</label>
+                    <input type="text" id="accountName" placeholder="Ej: Efectivo, Banco, Ahorros" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="initialBalance">Saldo Inicial</label>
+                    <input type="number" id="initialBalance" placeholder="Saldo Inicial" step="0.01" value="0">
+                </div>
+                
+                <button type="submit">Agregar Cuenta</button>
+            </form>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 Wallet UCC. Todos los derechos reservados.</p>
+            <p>Desarrollado por: Andres Felipe Moncayo Erasso</p>
+            <p>Estudiante de Ingeniería de Software - Grupo 1B</p>
+            <p>Universidad Cooperativa de Colombia</p>
+        </footer>
+    </div>
+
+    <script>
+        // Variables globales
+        let totalBalance = 0;
+        const transactions = [];
+        const accounts = [];
+        
+        // Elementos del DOM
+        const balanceElement = document.getElementById('balance');
+        const transactionForm = document.getElementById('transactionForm');
+        const accountForm = document.getElementById('accountForm');
+        const descriptionInput = document.getElementById('description');
+        const amountInput = document.getElementById('amount');
+        const typeSelect = document.getElementById('type');
+        const sourceAccountSelect = document.getElementById('sourceAccount');
+        const destinationAccountSelect = document.getElementById('destinationAccount');
+        const destinationAccountGroup = document.getElementById('destinationAccountGroup');
+        const transactionsContainer = document.getElementById('transactions');
+        const accountsContainer = document.getElementById('accounts');
+        const accountNameInput = document.getElementById('accountName');
+        const initialBalanceInput = document.getElementById('initialBalance');
+        
+        // Escuchar cambios en el tipo de transacción
+        typeSelect.addEventListener('change', function() {
+            if (this.value === 'transfer') {
+                destinationAccountGroup.classList.remove('hidden');
+            } else {
+                destinationAccountGroup.classList.add('hidden');
+            }
+        });
+        
+        // Manejador de envío del formulario de transacción
+        transactionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const description = descriptionInput.value;
+            const amount = parseFloat(amountInput.value);
+            const type = typeSelect.value;
+            const sourceAccountId = sourceAccountSelect.value;
+            const destinationAccountId = destinationAccountSelect.value;
+            
+            // Validar entrada
+            if (description.trim() === '' || isNaN(amount) || amount <= 0) {
+                alert('Por favor ingrese una descripción válida y un monto positivo.');
+                return;
+            }
+            
+            if (type === 'transfer' && sourceAccountId === destinationAccountId) {
+                alert('No puedes transferir a la misma cuenta.');
+                return;
+            }
+            
+            // Validar que la cuenta de origen tenga suficiente saldo para gastos o transferencias
+            const sourceAccount = accounts.find(acc => acc.id === sourceAccountId);
+            if (type !== 'income' && sourceAccount.balance < amount) {
+                alert('Saldo insuficiente en la cuenta de origen.');
+                return;
+            }
+            
+            // Crear nueva transacción
+            addTransaction(description, amount, type, sourceAccountId, destinationAccountId);
+            
+            // Limpiar formulario
+            transactionForm.reset();
+            destinationAccountGroup.classList.add('hidden');
+        });
+        
+        // Manejador de envío del formulario de nueva cuenta
+        accountForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const name = accountNameInput.value;
+            const initialBalance = parseFloat(initialBalanceInput.value) || 0;
+            
+            // Validar entrada
+            if (name.trim() === '') {
+                alert('Por favor ingrese un nombre válido para la cuenta.');
+                return;
+            }
+            
+            // Crear nueva cuenta
+            addAccount(name, initialBalance);
+            
+            // Limpiar formulario
+            accountForm.reset();
+        });
+        
+        // Función para agregar una cuenta
+        function addAccount(name, initialBalance) {
+            // Crear objeto de cuenta
+            const account = {
+                id: `account-${Date.now()}`,
+                name,
+                balance: initialBalance
+            };
+            
+            // Agregar a la lista de cuentas
+            accounts.push(account);
+            
+            // Actualizar balance total
+            updateTotalBalance();
+            
+            // Actualizar la interfaz
+            updateUI();
+        }
+        
+        // Función para actualizar el balance total
+        function updateTotalBalance() {
+            totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
+        }
+        
+        // Función para agregar una transacción
+        function addTransaction(description, amount, type, sourceAccountId, destinationAccountId = null) {
+            // Crear objeto de transacción
+            const transaction = {
+                id: `transaction-${Date.now()}`,
+                description,
+                amount,
+                type,
+                sourceAccountId,
+                destinationAccountId,
+                date: new Date()
+            };
+            
+            // Agregar a la lista de transacciones
+            transactions.push(transaction);
+            
+            // Actualizar balance de las cuentas
+            const sourceAccount = accounts.find(acc => acc.id === sourceAccountId);
+            
+            if (type === 'income') {
+                sourceAccount.balance += amount;
+            } else if (type === 'expense') {
+                sourceAccount.balance -= amount;
+            } else if (type === 'transfer') {
+                const destinationAccount = accounts.find(acc => acc.id === destinationAccountId);
+                sourceAccount.balance -= amount;
+                destinationAccount.balance += amount;
+            }
+            
+            // Actualizar balance total
+            updateTotalBalance();
+            
+            // Actualizar la interfaz
+            updateUI();
+        }
+        
+        // Función para actualizar los select de cuentas
+        function updateAccountSelects() {
+            // Limpiar opciones existentes
+            sourceAccountSelect.innerHTML = '';
+            destinationAccountSelect.innerHTML = '';
+            
+            // Agregar opciones para cada cuenta
+            accounts.forEach(account => {
+                const sourceOption = document.createElement('option');
+                sourceOption.value = account.id;
+                sourceOption.textContent = `${account.name} ($${account.balance.toFixed(2)})`;
+                sourceAccountSelect.appendChild(sourceOption);
+                
+                const destOption = document.createElement('option');
+                destOption.value = account.id;
+                destOption.textContent = `${account.name} ($${account.balance.toFixed(2)})`;
+                destinationAccountSelect.appendChild(destOption);
+            });
+        }
+        
+        // Función para actualizar la interfaz
+        function updateUI() {
+            // Actualizar balance total
+            balanceElement.textContent = `$${totalBalance.toFixed(2)}`;
+            
+            // Actualizar cuentas
+            accountsContainer.innerHTML = '';
+            accounts.forEach(account => {
+                const accountElement = document.createElement('div');
+                accountElement.className = 'account';
+                accountElement.innerHTML = `
+                    <div class="account-name">${account.name}</div>
+                    <div class="account-balance">$${account.balance.toFixed(2)}</div>
+                `;
+                accountsContainer.appendChild(accountElement);
+            });
+            
+            // Actualizar selects de cuentas
+            updateAccountSelects();
+            
+            // Limpiar contenedor de transacciones
+            transactionsContainer.innerHTML = '';
+            
+            // Si no hay transacciones, mostrar mensaje
+            if (transactions.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.className = 'transaction';
+                emptyMessage.innerHTML = '<span>No hay transacciones aún</span>';
+                transactionsContainer.appendChild(emptyMessage);
+                return;
+            }
+            
+            // Agregar cada transacción al contenedor (ordenadas por fecha, más recientes primero)
+            transactions
+                .slice()
+                .reverse()
+                .forEach(transaction => {
+                    const transactionElement = document.createElement('div');
+                    transactionElement.className = 'transaction';
+                    
+                    const sourceAccount = accounts.find(acc => acc.id === transaction.sourceAccountId);
+                    const sourceAccountName = sourceAccount ? sourceAccount.name : 'Cuenta desconocida';
+                    
+                    let transactionInfo = '';
+                    let amountClass = '';
+                    let amountSign = '';
+                    
+                    if (transaction.type === 'income') {
+                        transactionInfo = `Ingreso a ${sourceAccountName}`;
+                        amountClass = 'income';
+                        amountSign = '+';
+                    } else if (transaction.type === 'expense') {
+                        transactionInfo = `Gasto desde ${sourceAccountName}`;
+                        amountClass = 'expense';
+                        amountSign = '-';
+                    } else if (transaction.type === 'transfer') {
+                        const destinationAccount = accounts.find(acc => acc.id === transaction.destinationAccountId);
+                        const destinationAccountName = destinationAccount ? destinationAccount.name : 'Cuenta desconocida';
+                        transactionInfo = `Transferencia de ${sourceAccountName} a ${destinationAccountName}`;
+                        amountClass = '';
+                        amountSign = '';
+                    }
+                    
+                    transactionElement.innerHTML = `
+                        <div>
+                            <strong>${transaction.description}</strong>
+                            <div>${transactionInfo}</div>
+                            <div>${new Date(transaction.date).toLocaleString()}</div>
+                        </div>
+                        <div class="${amountClass}">${amountSign}$${transaction.amount.toFixed(2)}</div>
+                    `;
+                    
+                    transactionsContainer.appendChild(transactionElement);
+                });
+        }
+        
+        // Inicializar con algunas cuentas predeterminadas
+        addAccount('Efectivo', 500);
+        addAccount('Banco', 1000);
+        addAccount('Ahorros', 2000);
+        
+        // Inicializar UI
+        updateUI();
+    </script>
+</body>
+</html>
